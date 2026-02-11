@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "OperaVoce",
+    "slug": "operavoce",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "com.operavoce.app",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a1a2e"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.operavoce.app",
+      "infoPlist": {
+        "NSCalendarsUsageDescription": "OperaVoce needs access to your calendar to sync practice sessions.",
+        "NSHealthShareUsageDescription": "OperaVoce uses HealthKit to log your practice sessions as mindful minutes.",
+        "NSHealthUpdateUsageDescription": "OperaVoce uses HealthKit to log your practice sessions as mindful minutes.",
+        "NSMicrophoneUsageDescription": "OperaVoce needs microphone access for voice exercises."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a1a2e"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.operavoce.app",
+      "permissions": [
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-calendar",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "OperaVoce needs microphone access for voice exercises."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
+  }
+}
