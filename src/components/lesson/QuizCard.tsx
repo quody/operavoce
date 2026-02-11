@@ -39,19 +39,22 @@ export function QuizCard({ config, onComplete }: QuizCardProps) {
 
   if (isFinished) {
     return (
-      <View className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 items-center">
-        <Text className="text-2xl font-bold text-gray-900 mb-2">Quiz Complete!</Text>
-        <Text className="text-4xl font-bold text-primary-500 mb-2">
+      <View className="bg-white rounded-3xl p-6 border border-surface-200 items-center">
+        <View className="w-16 h-16 rounded-full bg-primary-50 items-center justify-center mb-4">
+          <Text className="text-primary-600 text-2xl">{'\u2713'}</Text>
+        </View>
+        <Text className="text-2xl font-bold text-stone-900 mb-2">Quiz Complete!</Text>
+        <Text className="text-4xl font-bold text-primary-600 mb-2">
           {correctCount}/{totalQuestions}
         </Text>
-        <Text className="text-gray-600 mb-6">
+        <Text className="text-stone-600 mb-6">
           {correctCount === totalQuestions
             ? 'Perfect score!'
             : correctCount >= totalQuestions / 2
               ? 'Good job! Keep practicing.'
               : 'Keep studying, you\'ll get there!'}
         </Text>
-        <TouchableOpacity onPress={onComplete} className="px-8 py-3 rounded-xl bg-primary-500">
+        <TouchableOpacity onPress={onComplete} className="px-8 py-3.5 rounded-2xl bg-primary-600">
           <Text className="text-white font-semibold text-lg">Continue</Text>
         </TouchableOpacity>
       </View>
@@ -60,24 +63,24 @@ export function QuizCard({ config, onComplete }: QuizCardProps) {
 
   return (
     <ScrollView className="flex-1">
-      <View className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <Text className="text-sm text-gray-400 mb-2">
+      <View className="bg-white rounded-3xl p-6 border border-surface-200">
+        <Text className="text-sm text-stone-400 mb-3 font-medium">
           Question {currentQuestion + 1} of {totalQuestions}
         </Text>
-        <Text className="text-lg font-semibold text-gray-900 mb-6">{question.question}</Text>
+        <Text className="text-lg font-semibold text-stone-900 mb-6">{question.question}</Text>
 
         <View className="gap-3 mb-4">
           {question.options.map((option, index) => {
-            let optionStyle = 'border-2 border-gray-200 bg-gray-50';
-            let textStyle = 'text-gray-700';
+            let optionStyle = 'border-2 border-surface-200 bg-surface-50';
+            let textStyle = 'text-stone-700';
 
             if (selectedAnswer !== null) {
               if (index === question.correct_index) {
-                optionStyle = 'border-2 border-green-500 bg-green-50';
-                textStyle = 'text-green-700';
+                optionStyle = 'border-2 border-success-500 bg-success-50';
+                textStyle = 'text-success-600';
               } else if (index === selectedAnswer && !isCorrect) {
-                optionStyle = 'border-2 border-red-500 bg-red-50';
-                textStyle = 'text-red-700';
+                optionStyle = 'border-2 border-error-500 bg-error-50';
+                textStyle = 'text-error-500';
               }
             }
 
@@ -86,7 +89,7 @@ export function QuizCard({ config, onComplete }: QuizCardProps) {
                 key={index}
                 onPress={() => handleSelect(index)}
                 disabled={selectedAnswer !== null}
-                className={`p-4 rounded-xl ${optionStyle}`}
+                className={`p-4 rounded-2xl ${optionStyle}`}
               >
                 <Text className={`text-base font-medium ${textStyle}`}>{option}</Text>
               </TouchableOpacity>
@@ -95,13 +98,13 @@ export function QuizCard({ config, onComplete }: QuizCardProps) {
         </View>
 
         {showExplanation && question.explanation && (
-          <View className="bg-blue-50 p-4 rounded-xl mb-4">
+          <View className="bg-blue-50 p-4 rounded-2xl mb-4 border border-blue-200">
             <Text className="text-sm text-blue-800">{question.explanation}</Text>
           </View>
         )}
 
         {selectedAnswer !== null && (
-          <TouchableOpacity onPress={handleNext} className="px-6 py-3 rounded-xl bg-primary-500 self-end">
+          <TouchableOpacity onPress={handleNext} className="px-6 py-3 rounded-2xl bg-primary-600 self-end">
             <Text className="text-white font-semibold">
               {currentQuestion < totalQuestions - 1 ? 'Next' : 'Finish'}
             </Text>

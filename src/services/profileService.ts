@@ -2,6 +2,7 @@ import { getDatabase } from '@/lib/database';
 import { supabase } from '@/lib/supabase';
 import { Profile } from '@/types/database';
 import { getAuthMode, getCurrentUserId } from './authService';
+import { generateId } from '@/utils/uuid';
 
 export async function getProfile(): Promise<Profile | null> {
   const userId = await getCurrentUserId();
@@ -50,13 +51,17 @@ export async function updateProfile(updates: Partial<Profile>): Promise<void> {
   }
 }
 
-export async function enrollInProgram(programId: string): Promise<string> {
+export interface EnrollSchedule {
+  weekdays: number[]; // 0=Sun ... 6=Sat
+  time: string; // HH:MM
+}
+
+export async function enrollInProgram(programId: string, schedule?: EnrollSchedule): Promise<string> {
   const userId = await getCurrentUserId();
   if (!userId) throw new Error('No user session');
 
   const db = await getDatabase();
-  const { v4: uuidv4 } = require('uuid');
-  const id = uuidv4();
+  const id = generateId();
 
   const program = await db.getFirstAsync<{ duration_weeks: number }>(
     'SELECT duration_weeks FROM programs WHERE id = ?',
@@ -90,7 +95,58 @@ export async function enrollInProgram(programId: string): Promise<string> {
     [id, userId, programId, startDate, targetEndDate, firstModule?.id ?? null, firstLesson?.id ?? null]
   );
 
+  // Schedule sessions on the calendar
+  const weekdays = schedule?.weekdays ?? [1, 3, 5];
+  const time = schedule?.time ?? '18:00';
+  await scheduleProgramSessions(db, userId, id, programId, weekdays, time);
+
   return id;
+}
+
+async function scheduleProgramSessions(
+  db: Awaited<ReturnType<typeof getDatabase>>,
+  userId: string,
+  userProgramId: string,
+  programId: string,
+  weekdays: number[],
+  practiceTime: string,
+): Promise<void> {
+  // Get all lessons in program order
+  const lessons = await db.getAllAsync<{ id: string; duration_estimate_min: number | null }>(
+    `SELECT l.id, l.duration_estimate_min FROM lessons l
+     JOIN modules m ON l.module_id = m.id
+     WHERE m.program_id = ?
+     ORDER BY m.sort_order, l.sort_order`,
+    [programId]
+  );
+
+  if (lessons.length === 0) return;
+
+  // Schedule one session per practice day, starting tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+
+  let lessonIndex = 0;
+  const cursor = new Date(tomorrow);
+
+  while (lessonIndex < lessons.length) {
+    const weekday = cursor.getDay();
+    if (weekdays.includes(weekday)) {
+      const dateStr = cursor.toISOString().split('T')[0];
+      const sessionId = generateId();
+      const lesson = lessons[lessonIndex];
+
+      await db.runAsync(
+        `INSERT INTO sessions (id, user_id, scheduled_date, scheduled_time, user_program_id, linked_lesson_ids)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [sessionId, userId, dateStr, practiceTime, userProgramId, JSON.stringify([lesson.id])]
+      );
+
+      lessonIndex++;
+    }
+    cursor.setDate(cursor.getDate() + 1);
+  }
 }
 
 export async function getUserPrograms(): Promise<any[]> {

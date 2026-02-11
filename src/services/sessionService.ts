@@ -216,3 +216,48 @@ export async function getSessionStats(): Promise<{ total_sessions: number; total
       : 0,
   };
 }
+
+export async function rescheduleSession(sessionId: string, newDate: string, newTime: string): Promise<void> {
+  await updateSession(sessionId, {
+    scheduled_date: newDate,
+    scheduled_time: newTime,
+  });
+}
+
+export async function rescheduleAllOnWeekday(
+  oldWeekday: number,
+  oldTime: string,
+  newWeekday: number,
+  newTime: string,
+): Promise<void> {
+  const userId = await getCurrentUserId();
+  if (!userId) return;
+
+  const db = await getDatabase();
+  // Get all upcoming sessions for this user
+  const sessions = await db.getAllAsync<{ id: string; scheduled_date: string; scheduled_time: string | null }>(
+    `SELECT id, scheduled_date, scheduled_time FROM sessions
+     WHERE user_id = ? AND status = 'upcoming'
+     ORDER BY scheduled_date`,
+    [userId]
+  );
+
+  for (const session of sessions) {
+    const date = new Date(session.scheduled_date + 'T00:00:00');
+    const sessionWeekday = date.getDay();
+    const sessionTime = session.scheduled_time ?? '';
+
+    if (sessionWeekday === oldWeekday && sessionTime === oldTime) {
+      // Calculate new date: shift to the new weekday in the same week
+      const diff = newWeekday - oldWeekday;
+      const newDate = new Date(date);
+      newDate.setDate(newDate.getDate() + diff);
+      const newDateStr = newDate.toISOString().split('T')[0];
+
+      await updateSession(session.id, {
+        scheduled_date: newDateStr,
+        scheduled_time: newTime,
+      });
+    }
+  }
+}

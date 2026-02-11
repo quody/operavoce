@@ -13,15 +13,18 @@ export function DayView({ day }: DayViewProps) {
   const router = useRouter();
 
   return (
-    <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
-      <Text className="text-2xl font-bold text-gray-900 mb-4 mt-2">
+    <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
+      <Text className="text-2xl font-bold text-stone-900 mb-5 mt-2">
         {formatRelativeDate(day.date)}
       </Text>
 
       {day.sessions.length === 0 ? (
-        <View className="items-center py-12">
-          <Text className="text-gray-400 text-lg mb-2">No sessions scheduled</Text>
-          <Text className="text-gray-400 text-sm">Tap + to add a practice session</Text>
+        <View className="items-center py-16">
+          <View className="w-16 h-16 rounded-full bg-surface-100 items-center justify-center mb-4">
+            <Text className="text-stone-400 text-2xl">{'\u25A3'}</Text>
+          </View>
+          <Text className="text-stone-500 text-base font-medium mb-1">No sessions scheduled</Text>
+          <Text className="text-stone-400 text-sm">Enroll in a program or tap + above</Text>
         </View>
       ) : (
         day.sessions.map((session) => (

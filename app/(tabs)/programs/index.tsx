@@ -1,11 +1,17 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card } from '@/components/common/Card';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { usePrograms, useUserPrograms } from '@/hooks/usePrograms';
 import { Program } from '@/types/database';
+
+const LEVEL_COLORS: Record<string, string> = {
+  beginner: 'bg-green-100 text-green-700',
+  intermediate: 'bg-accent-100 text-accent-700',
+  advanced: 'bg-primary-100 text-primary-700',
+};
 
 export default function ProgramCatalogScreen() {
   const router = useRouter();
@@ -16,32 +22,42 @@ export default function ProgramCatalogScreen() {
 
   const renderProgram = ({ item }: { item: Program }) => {
     const isEnrolled = enrolledProgramIds.has(item.id);
+    const levelStyle = (item.level ? LEVEL_COLORS[item.level] : null) ?? 'bg-stone-100 text-stone-700';
 
     return (
       <Card onPress={() => router.push(`/(tabs)/programs/${item.id}`)} className="mb-4">
-        <View className="flex-row justify-between items-start">
-          <View className="flex-1">
-            <Text className="text-lg font-bold text-gray-900">{item.title}</Text>
-            <Text className="text-sm text-gray-500 mt-1 capitalize">{item.level}</Text>
+        <View className="flex-row items-start gap-4">
+          <View className="w-12 h-12 rounded-2xl bg-primary-50 items-center justify-center">
+            <Text className="text-primary-500 text-lg">{'\u266B'}</Text>
           </View>
-          {item.is_free && (
-            <View className="bg-green-100 px-2 py-1 rounded-full">
-              <Text className="text-green-700 text-xs font-medium">Free</Text>
+          <View className="flex-1">
+            <View className="flex-row items-center gap-2 mb-1">
+              <Text className="text-base font-bold text-stone-900 flex-1">{item.title}</Text>
+              {item.is_free && (
+                <View className="bg-success-50 px-2.5 py-0.5 rounded-full">
+                  <Text className="text-success-600 text-xs font-semibold">Free</Text>
+                </View>
+              )}
+              {isEnrolled && (
+                <View className="bg-primary-50 px-2.5 py-0.5 rounded-full">
+                  <Text className="text-primary-600 text-xs font-semibold">Enrolled</Text>
+                </View>
+              )}
             </View>
-          )}
-          {isEnrolled && (
-            <View className="bg-primary-100 px-2 py-1 rounded-full">
-              <Text className="text-primary-700 text-xs font-medium">Enrolled</Text>
+            <Text className="text-sm text-stone-500 mb-3" numberOfLines={2}>
+              {item.description}
+            </Text>
+            <View className="flex-row items-center gap-3">
+              <View className={`px-2.5 py-0.5 rounded-full ${levelStyle.split(' ')[0]}`}>
+                <Text className={`text-xs font-medium capitalize ${levelStyle.split(' ')[1]}`}>
+                  {item.level}
+                </Text>
+              </View>
+              {item.duration_weeks && (
+                <Text className="text-xs text-stone-400">{item.duration_weeks} weeks</Text>
+              )}
             </View>
-          )}
-        </View>
-        <Text className="text-sm text-gray-600 mt-2" numberOfLines={2}>
-          {item.description}
-        </Text>
-        <View className="flex-row gap-4 mt-3">
-          {item.duration_weeks && (
-            <Text className="text-xs text-gray-400">{item.duration_weeks} weeks</Text>
-          )}
+          </View>
         </View>
       </Card>
     );
@@ -52,17 +68,17 @@ export default function ProgramCatalogScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="px-6 pt-4 pb-2">
-        <Text className="text-2xl font-bold text-gray-900">Programs</Text>
-        <Text className="text-sm text-gray-500 mt-1">Structured training to develop your voice</Text>
+    <SafeAreaView className="flex-1 bg-surface-50">
+      <View className="px-6 pt-6 pb-4">
+        <Text className="text-2xl font-bold text-stone-900">Programs</Text>
+        <Text className="text-sm text-stone-500 mt-1">Structured training to develop your voice</Text>
       </View>
 
       <FlatList
         data={programs}
         renderItem={renderProgram}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>

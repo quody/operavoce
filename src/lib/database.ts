@@ -144,3 +144,19 @@ export async function closeDatabase(): Promise<void> {
     db = null;
   }
 }
+
+export async function clearAllData(): Promise<void> {
+  const database = await getDatabase();
+  await database.execAsync(`
+    DELETE FROM sync_queue;
+    DELETE FROM session_goals;
+    DELETE FROM sessions;
+    DELETE FROM lesson_completions;
+    DELETE FROM user_programs;
+    DELETE FROM lessons;
+    DELETE FROM modules;
+    DELETE FROM programs;
+    DELETE FROM notification_preferences;
+    DELETE FROM profiles;
+  `);
+}

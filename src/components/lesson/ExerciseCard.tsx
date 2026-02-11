@@ -55,22 +55,22 @@ export function ExerciseCard({ title, config, onComplete }: ExerciseCardProps) {
   };
 
   return (
-    <View className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      <Text className="text-xl font-bold text-gray-900 mb-2">{title}</Text>
-      <Text className="text-base text-gray-600 mb-6">{config.instructions}</Text>
+    <View className="bg-white rounded-3xl p-6 border border-surface-200">
+      <Text className="text-xl font-bold text-stone-900 mb-2">{title}</Text>
+      <Text className="text-base text-stone-600 mb-6 leading-6">{config.instructions}</Text>
 
       {config.duration_seconds ? (
-        <View className="items-center mb-6">
-          <Text className="text-5xl font-bold text-primary-500 mb-2">
+        <View className="items-center mb-8">
+          <Text className="text-5xl font-bold text-primary-600 mb-2">
             {formatTime(timeRemaining)}
           </Text>
           {config.reps && (
-            <Text className="text-lg text-gray-500">
+            <Text className="text-lg text-stone-500">
               Rep {currentRep} of {config.reps}
             </Text>
           )}
           {config.bpm && (
-            <Text className="text-sm text-gray-400 mt-1">
+            <Text className="text-sm text-stone-400 mt-1">
               Tempo: {config.bpm} BPM
             </Text>
           )}
@@ -82,18 +82,18 @@ export function ExerciseCard({ title, config, onComplete }: ExerciseCardProps) {
           <>
             <TouchableOpacity
               onPress={handleStartPause}
-              className={`px-8 py-3 rounded-xl ${isRunning ? 'bg-accent-500' : 'bg-primary-500'}`}
+              className={`px-8 py-3.5 rounded-2xl ${isRunning ? 'bg-accent-500' : 'bg-primary-600'}`}
             >
               <Text className="text-white font-semibold text-lg">
                 {isRunning ? 'Pause' : 'Start'}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleReset} className="px-6 py-3 rounded-xl border-2 border-gray-300">
-              <Text className="text-gray-600 font-semibold text-lg">Reset</Text>
+            <TouchableOpacity onPress={handleReset} className="px-6 py-3.5 rounded-2xl border-2 border-surface-300">
+              <Text className="text-stone-600 font-semibold text-lg">Reset</Text>
             </TouchableOpacity>
           </>
         ) : (
-          <TouchableOpacity onPress={onComplete} className="px-8 py-3 rounded-xl bg-green-500">
+          <TouchableOpacity onPress={onComplete} className="px-8 py-3.5 rounded-2xl bg-success-500">
             <Text className="text-white font-semibold text-lg">Complete</Text>
           </TouchableOpacity>
         )}

@@ -39,11 +39,11 @@ export function AudioPlayer({ url, title }: AudioPlayerProps) {
   const progress = duration > 0 ? (position / duration) * 100 : 0;
 
   return (
-    <View className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-      {title && <Text className="text-base font-semibold text-gray-900 mb-3">{title}</Text>}
+    <View className="bg-white rounded-2xl p-5 border border-surface-200">
+      {title && <Text className="text-base font-semibold text-stone-900 mb-4">{title}</Text>}
 
       {/* Progress bar */}
-      <View className="h-2 bg-gray-200 rounded-full mb-3">
+      <View className="h-2 bg-surface-100 rounded-full mb-4 overflow-hidden">
         <View
           className="h-2 bg-primary-500 rounded-full"
           style={{ width: `${progress}%` }}
@@ -51,33 +51,33 @@ export function AudioPlayer({ url, title }: AudioPlayerProps) {
       </View>
 
       <View className="flex-row items-center justify-between">
-        <Text className="text-xs text-gray-500">{formatMs(position)}</Text>
+        <Text className="text-xs text-stone-500 font-medium">{formatMs(position)}</Text>
 
-        <View className="flex-row items-center gap-4">
+        <View className="flex-row items-center gap-5">
           <TouchableOpacity
             onPress={() => seekTo(Math.max(0, position - 10000))}
             className="p-2"
           >
-            <Text className="text-primary-500 font-semibold">-10s</Text>
+            <Text className="text-primary-600 font-semibold text-sm">-10s</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={handlePlayPause}
-            className="w-12 h-12 rounded-full bg-primary-500 items-center justify-center"
+            className="w-12 h-12 rounded-full bg-primary-600 items-center justify-center"
           >
-            <Text className="text-white font-bold text-lg">{isPlaying ? '||' : '>'}</Text>
+            <Text className="text-white font-bold text-lg">{isPlaying ? '||' : '\u25B6'}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => seekTo(Math.min(duration, position + 10000))}
             className="p-2"
           >
-            <Text className="text-primary-500 font-semibold">+10s</Text>
+            <Text className="text-primary-600 font-semibold text-sm">+10s</Text>
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity onPress={handleSpeedChange} className="p-2">
-          <Text className="text-primary-500 font-semibold text-xs">{playbackSpeed}x</Text>
+          <Text className="text-primary-600 font-semibold text-xs">{playbackSpeed}x</Text>
         </TouchableOpacity>
       </View>
     </View>

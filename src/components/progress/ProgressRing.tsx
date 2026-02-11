@@ -21,7 +21,7 @@ export function ProgressRing({
     <View className="items-center">
       <View
         style={{ width: size, height: size }}
-        className="items-center justify-center rounded-full border-4 border-gray-200"
+        className="items-center justify-center rounded-full border-4 border-surface-200"
       >
         <View
           className="absolute inset-0 rounded-full border-4 border-primary-500"
@@ -31,12 +31,12 @@ export function ProgressRing({
             opacity: clampedProgress / 100,
           }}
         />
-        <Text className="text-2xl font-bold text-primary-500">
+        <Text className="text-2xl font-bold text-primary-600">
           {Math.round(clampedProgress)}%
         </Text>
       </View>
-      {label && <Text className="text-sm font-medium text-gray-900 mt-2">{label}</Text>}
-      {sublabel && <Text className="text-xs text-gray-500">{sublabel}</Text>}
+      {label && <Text className="text-sm font-medium text-stone-900 mt-2">{label}</Text>}
+      {sublabel && <Text className="text-xs text-stone-500">{sublabel}</Text>}
     </View>
   );
 }

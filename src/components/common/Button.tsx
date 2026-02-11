@@ -10,6 +10,7 @@ interface ButtonProps {
   loading?: boolean;
   icon?: React.ReactNode;
   fullWidth?: boolean;
+  dark?: boolean;
 }
 
 export function Button({
@@ -21,28 +22,29 @@ export function Button({
   loading = false,
   icon,
   fullWidth = false,
+  dark = false,
 }: ButtonProps) {
-  const baseStyle = 'rounded-xl items-center justify-center flex-row';
+  const baseStyle = 'items-center justify-center flex-row';
   const widthStyle = fullWidth ? 'w-full' : '';
 
   const sizeStyles = {
-    sm: 'px-4 py-2',
-    md: 'px-6 py-3',
-    lg: 'px-8 py-4',
+    sm: 'px-5 py-2.5 rounded-xl',
+    md: 'px-6 py-3.5 rounded-2xl',
+    lg: 'px-8 py-4 rounded-2xl',
   };
 
   const variantStyles = {
-    primary: 'bg-primary-500',
+    primary: 'bg-primary-600',
     secondary: 'bg-accent-500',
-    outline: 'border-2 border-primary-500 bg-transparent',
+    outline: dark ? 'border-2 border-primary-400 bg-transparent' : 'border-2 border-primary-300 bg-transparent',
     ghost: 'bg-transparent',
   };
 
   const textStyles = {
     primary: 'text-white',
     secondary: 'text-white',
-    outline: 'text-primary-500',
-    ghost: 'text-primary-500',
+    outline: dark ? 'text-white' : 'text-primary-600',
+    ghost: dark ? 'text-primary-300' : 'text-primary-600',
   };
 
   const textSizeStyles = {
@@ -51,21 +53,21 @@ export function Button({
     lg: 'text-lg',
   };
 
-  const disabledStyle = disabled || loading ? 'opacity-50' : '';
+  const disabledStyle = disabled || loading ? 'opacity-40' : '';
 
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled || loading}
       className={`${baseStyle} ${sizeStyles[size]} ${variantStyles[variant]} ${widthStyle} ${disabledStyle}`}
-      activeOpacity={0.7}
+      activeOpacity={0.8}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' || variant === 'secondary' ? '#fff' : '#4a3f8f'} />
+        <ActivityIndicator color={variant === 'primary' || variant === 'secondary' ? '#fff' : '#7c3aed'} />
       ) : (
         <View className="flex-row items-center gap-2">
           {icon}
-          <Text className={`font-semibold ${textStyles[variant]} ${textSizeStyles[size]}`}>
+          <Text className={`font-semibold tracking-wide ${textStyles[variant]} ${textSizeStyles[size]}`}>
             {title}
           </Text>
         </View>

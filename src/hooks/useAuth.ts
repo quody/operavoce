@@ -4,6 +4,7 @@ import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthStore } from '@/stores/authStore';
+import { useUIStore } from '@/stores/uiStore';
 import { mergeLocalToCloud } from '@/services/mergeManager';
 import { setupGuestUser, markOnboardingComplete, hasCompletedOnboarding } from '@/services/authService';
 
@@ -61,6 +62,7 @@ export function useAuth() {
   const initializeAuth = useCallback(async () => {
     try {
       const onboarded = await hasCompletedOnboarding();
+      useUIStore.getState().setOnboardingComplete(onboarded);
       if (!onboarded) {
         setAuthState('unauthenticated');
         return;

@@ -3,6 +3,7 @@ import {
   getSessions, getSessionWithDetails, createSession, completeSession,
   skipSession, addSessionGoal, updateGoal, getTodaySession,
   getCompletedSessionDates, getSessionStats, updateSession,
+  rescheduleSession, rescheduleAllOnWeekday,
 } from '@/services/sessionService';
 
 export function useSessions(startDate: string, endDate: string) {
@@ -113,6 +114,34 @@ export function useUpdateGoal() {
       updateGoal(params.goalId, params.updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sessionStats'] });
+    },
+  });
+}
+
+export function useRescheduleSession() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: { sessionId: string; newDate: string; newTime: string }) =>
+      rescheduleSession(params.sessionId, params.newDate, params.newTime),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sessions'] });
+      queryClient.invalidateQueries({ queryKey: ['todaySession'] });
+      queryClient.invalidateQueries({ queryKey: ['session'] });
+    },
+  });
+}
+
+export function useRescheduleAllOnWeekday() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: { oldWeekday: number; oldTime: string; newWeekday: number; newTime: string }) =>
+      rescheduleAllOnWeekday(params.oldWeekday, params.oldTime, params.newWeekday, params.newTime),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sessions'] });
+      queryClient.invalidateQueries({ queryKey: ['todaySession'] });
+      queryClient.invalidateQueries({ queryKey: ['session'] });
     },
   });
 }

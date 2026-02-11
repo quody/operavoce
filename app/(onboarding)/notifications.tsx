@@ -31,17 +31,17 @@ export default function NotificationsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-primary-950">
       <View className="flex-1 justify-center px-8">
-        <View className="items-center mb-10">
-          <View className="w-20 h-20 bg-primary-100 rounded-full items-center justify-center mb-6">
-            <Text className="text-4xl">&#128276;</Text>
+        <View className="items-center mb-12">
+          <View className="w-20 h-20 bg-primary-800 rounded-full items-center justify-center mb-8 border-2 border-primary-600">
+            <Text className="text-3xl">{'\uD83D\uDD14'}</Text>
           </View>
-          <Text className="text-3xl font-bold text-gray-900 mb-3 text-center">
+          <Text className="text-white text-3xl font-bold mb-4 text-center">
             Stay on Track
           </Text>
-          <Text className="text-lg text-gray-600 text-center leading-7">
-            Get reminders for your practice sessions and celebrate your streaks. You can customize these anytime in Settings.
+          <Text className="text-primary-300 text-base text-center leading-7">
+            Get reminders for your practice sessions and celebrate your streaks.{'\n'}You can customize these anytime in Settings.
           </Text>
         </View>
 
@@ -59,8 +59,16 @@ export default function NotificationsScreen() {
             variant="ghost"
             size="lg"
             fullWidth
+            dark
           />
         </View>
+      </View>
+
+      {/* Decorative bottom */}
+      <View className="items-center pb-8">
+        <Text className="text-primary-700 text-xs tracking-widest uppercase">
+          Almost there
+        </Text>
       </View>
     </SafeAreaView>
   );

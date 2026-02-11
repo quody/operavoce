@@ -17,17 +17,17 @@ export default function JournalScreen() {
     <Card className="mb-3">
       <View className="flex-row justify-between items-start mb-2">
         <View>
-          <Text className="text-base font-semibold text-gray-900">{formatDate(item.date)}</Text>
+          <Text className="text-base font-semibold text-stone-900">{formatDate(item.date)}</Text>
           {item.program_title && (
-            <Text className="text-sm text-gray-500 mt-0.5">{item.program_title}</Text>
+            <Text className="text-sm text-stone-500 mt-0.5">{item.program_title}</Text>
           )}
         </View>
         {item.self_rating && (
-          <View className="flex-row items-center">
-            <Text className="text-accent-500 mr-1">
-              {'*'.repeat(item.self_rating)}
+          <View className="flex-row items-center gap-1">
+            <Text className="text-accent-500 text-sm">
+              {'\u2605'.repeat(item.self_rating)}
             </Text>
-            <Text className="text-xs text-gray-400">
+            <Text className="text-xs text-stone-400">
               {RATING_LABELS[item.self_rating - 1]}
             </Text>
           </View>
@@ -35,13 +35,13 @@ export default function JournalScreen() {
       </View>
 
       {item.duration_min && (
-        <Text className="text-xs text-gray-400 mb-2">
+        <Text className="text-xs text-stone-400 mb-2">
           Duration: {formatDuration(item.duration_min)}
         </Text>
       )}
 
       {item.journal_note && (
-        <Text className="text-sm text-gray-700 leading-5 mt-1">{item.journal_note}</Text>
+        <Text className="text-sm text-stone-700 leading-5 mt-1">{item.journal_note}</Text>
       )}
     </Card>
   );
@@ -51,18 +51,22 @@ export default function JournalScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <View className="flex-row items-center px-4 py-3 bg-white border-b border-gray-100">
-        <TouchableOpacity onPress={() => router.back()} className="p-2">
-          <Text className="text-primary-500">Back</Text>
+    <SafeAreaView className="flex-1 bg-surface-50">
+      <View className="flex-row items-center px-5 py-4 bg-white border-b border-surface-200">
+        <TouchableOpacity onPress={() => router.back()} className="flex-row items-center gap-1 p-1">
+          <Text className="text-primary-600 text-lg">{'\u2039'}</Text>
+          <Text className="text-primary-600">Back</Text>
         </TouchableOpacity>
-        <Text className="text-lg font-bold text-gray-900 ml-2">Practice Journal</Text>
+        <Text className="text-lg font-bold text-stone-900 ml-3">Practice Journal</Text>
       </View>
 
       {entries.length === 0 ? (
         <View className="flex-1 items-center justify-center px-8">
-          <Text className="text-gray-400 text-lg text-center mb-2">No journal entries yet</Text>
-          <Text className="text-gray-400 text-sm text-center">
+          <View className="w-16 h-16 rounded-full bg-surface-100 items-center justify-center mb-4">
+            <Text className="text-stone-400 text-2xl">{'\u270E'}</Text>
+          </View>
+          <Text className="text-stone-500 text-base font-medium mb-1">No journal entries yet</Text>
+          <Text className="text-stone-400 text-sm text-center">
             Complete practice sessions to start building your journal
           </Text>
         </View>
@@ -71,7 +75,7 @@ export default function JournalScreen() {
           data={entries}
           renderItem={renderEntry}
           keyExtractor={(item) => item.session_id}
-          contentContainerStyle={{ padding: 16 }}
+          contentContainerStyle={{ padding: 20 }}
           showsVerticalScrollIndicator={false}
         />
       )}

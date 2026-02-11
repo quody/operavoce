@@ -18,14 +18,12 @@ export function MonthView({ days, selectedDate, onSelectDate, year, month }: Mon
   ];
   const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-  // Pad days to start on correct day of week
   const firstDayOfWeek = new Date(year, month, 1).getDay();
   const paddedDays: (CalendarDay | null)[] = [
     ...Array(firstDayOfWeek).fill(null),
     ...days,
   ];
 
-  // Fill remaining cells
   while (paddedDays.length % 7 !== 0) {
     paddedDays.push(null);
   }
@@ -35,17 +33,21 @@ export function MonthView({ days, selectedDate, onSelectDate, year, month }: Mon
     weeks.push(paddedDays.slice(i, i + 7));
   }
 
+  const totalSessions = days.reduce((sum, d) => sum + d.sessions.length, 0);
+  const upcomingSessions = days.reduce((sum, d) => sum + d.sessions.filter(s => s.status === 'upcoming').length, 0);
+  const completedSessions = days.reduce((sum, d) => sum + d.sessions.filter(s => s.status === 'completed').length, 0);
+
   return (
-    <View className="px-4">
-      <Text className="text-xl font-bold text-gray-900 text-center mb-4">
+    <View className="px-5">
+      <Text className="text-xl font-bold text-stone-900 text-center mb-5">
         {monthNames[month]} {year}
       </Text>
 
       {/* Day headers */}
-      <View className="flex-row mb-2">
+      <View className="flex-row mb-3">
         {dayNames.map((name, i) => (
           <View key={i} className="flex-1 items-center">
-            <Text className="text-xs text-gray-400 font-medium">{name}</Text>
+            <Text className="text-xs text-stone-400 font-semibold">{name}</Text>
           </View>
         ))}
       </View>
@@ -64,28 +66,28 @@ export function MonthView({ days, selectedDate, onSelectDate, year, month }: Mon
             const today = isToday(day.date);
 
             let bgColor = 'bg-transparent';
-            if (isSelected) bgColor = 'bg-primary-500';
-            else if (day.hasCompleted) bgColor = 'bg-green-100';
+            if (isSelected) bgColor = 'bg-primary-600';
+            else if (day.hasCompleted) bgColor = 'bg-success-50';
             else if (today) bgColor = 'bg-primary-50';
 
             return (
               <TouchableOpacity
                 key={day.date}
                 onPress={() => onSelectDate(day.date)}
-                className={`flex-1 aspect-square items-center justify-center rounded-lg ${bgColor}`}
+                className={`flex-1 aspect-square items-center justify-center rounded-xl ${bgColor}`}
               >
                 <Text
                   className={`text-sm ${
                     isSelected ? 'text-white font-bold' :
-                    today ? 'text-primary-500 font-bold' :
-                    'text-gray-700'
+                    today ? 'text-primary-600 font-bold' :
+                    'text-stone-700'
                   }`}
                 >
                   {dayNum}
                 </Text>
                 {(day.hasCompleted || day.hasUpcoming) && !isSelected && (
                   <View className="flex-row gap-0.5 mt-0.5">
-                    {day.hasCompleted && <View className="w-1 h-1 rounded-full bg-green-500" />}
+                    {day.hasCompleted && <View className="w-1 h-1 rounded-full bg-success-500" />}
                     {day.hasUpcoming && <View className="w-1 h-1 rounded-full bg-blue-500" />}
                   </View>
                 )}
@@ -94,6 +96,23 @@ export function MonthView({ days, selectedDate, onSelectDate, year, month }: Mon
           })}
         </View>
       ))}
+
+      {/* Session summary */}
+      {totalSessions > 0 && (
+        <View className="mt-5 bg-surface-100 rounded-2xl p-4 flex-row items-center justify-between">
+          <Text className="text-sm font-semibold text-stone-700">
+            {totalSessions} session{totalSessions !== 1 ? 's' : ''} scheduled
+          </Text>
+          <View className="flex-row gap-3">
+            {completedSessions > 0 && (
+              <Text className="text-xs text-success-600 font-medium">{completedSessions} done</Text>
+            )}
+            {upcomingSessions > 0 && (
+              <Text className="text-xs text-blue-600 font-medium">{upcomingSessions} upcoming</Text>
+            )}
+          </View>
+        </View>
+      )}
     </View>
   );
 }

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getPrograms, getProgramWithModules, getLesson, seedDefaultPrograms, fetchAndCachePrograms } from '@/services/programService';
-import { enrollInProgram, getUserPrograms, updateProgramProgress } from '@/services/profileService';
+import { enrollInProgram, getUserPrograms, updateProgramProgress, EnrollSchedule } from '@/services/profileService';
 import { useAuthStore } from '@/stores/authStore';
 
 export function usePrograms() {
@@ -45,9 +45,12 @@ export function useEnrollProgram() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (programId: string) => enrollInProgram(programId),
+    mutationFn: (params: { programId: string; schedule?: EnrollSchedule }) =>
+      enrollInProgram(params.programId, params.schedule),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userPrograms'] });
+      queryClient.invalidateQueries({ queryKey: ['sessions'] });
+      queryClient.invalidateQueries({ queryKey: ['todaySession'] });
     },
   });
 }

@@ -3,26 +3,27 @@ import { Tabs } from 'expo-router';
 import { Text, View } from 'react-native';
 import { COLORS } from '@/lib/constants';
 
+const TAB_ICONS: Record<string, { active: string; inactive: string }> = {
+  Home: { active: '\u2302', inactive: '\u2302' },
+  Programs: { active: '\u266B', inactive: '\u266B' },
+  Calendar: { active: '\u25A3', inactive: '\u25A3' },
+  Progress: { active: '\u2197', inactive: '\u2197' },
+  Profile: { active: '\u25CF', inactive: '\u25CB' },
+};
+
 function TabIcon({ label, focused }: { label: string; focused: boolean }) {
-  const icons: Record<string, string> = {
-    Home: 'H',
-    Programs: 'P',
-    Calendar: 'C',
-    Progress: 'G',
-    Profile: 'U',
-  };
+  const icons = TAB_ICONS[label] ?? { active: '?', inactive: '?' };
 
   return (
-    <View className="items-center justify-center">
-      <View
-        className={`w-8 h-8 rounded-full items-center justify-center ${
-          focused ? 'bg-primary-500' : 'bg-transparent'
-        }`}
+    <View className="items-center justify-center pt-1">
+      <Text
+        className={`text-xl ${focused ? 'text-primary-600' : 'text-stone-400'}`}
       >
-        <Text className={`text-sm font-bold ${focused ? 'text-white' : 'text-gray-400'}`}>
-          {icons[label] ?? '?'}
-        </Text>
-      </View>
+        {focused ? icons.active : icons.inactive}
+      </Text>
+      {focused && (
+        <View className="w-1 h-1 rounded-full bg-primary-600 mt-1" />
+      )}
     </View>
   );
 }
@@ -36,14 +37,16 @@ export default function TabLayout() {
         tabBarInactiveTintColor: COLORS.muted,
         tabBarStyle: {
           backgroundColor: '#ffffff',
-          borderTopColor: '#e5e7eb',
-          height: 80,
-          paddingBottom: 20,
+          borderTopColor: '#e7e5e4',
+          borderTopWidth: 1,
+          height: 84,
+          paddingBottom: 24,
           paddingTop: 8,
         },
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: '600',
+          letterSpacing: 0.3,
         },
       }}
     >

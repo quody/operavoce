@@ -121,12 +121,7 @@ export async function seedDefaultPrograms(): Promise<void> {
   if (count && count.count > 0) return;
 
   const programs = [
-    { id: 'prog-1', title: 'Absolute Beginner: Your First Notes', description: 'A 4-week journey from posture to breathing, pitch, and simple phrases. Perfect for those taking their first steps into opera.', level: 'beginner', duration_weeks: 4, is_free: 1, sort_order: 0 },
-    { id: 'prog-2', title: 'Breath & Support Masterclass', description: 'A 3-week deep dive into appoggio technique — the foundation of operatic singing. Master diaphragmatic breathing and sustained support.', level: 'intermediate', duration_weeks: 3, is_free: 0, sort_order: 1 },
-    { id: 'prog-3', title: 'Italian Diction for Singers', description: '4 weeks of IPA, vowel purity, and consonant placement. Sing Italian with clarity and authenticity.', level: 'intermediate', duration_weeks: 4, is_free: 0, sort_order: 2 },
-    { id: 'prog-4', title: 'Vocal Agility & Coloratura', description: '6 weeks of scales, trills, and melismatic passages. Develop flexibility and precision in your vocal technique.', level: 'advanced', duration_weeks: 6, is_free: 0, sort_order: 3 },
-    { id: 'prog-5', title: 'Aria Workshop: First Arias', description: 'Learn and polish 3 beginner-friendly arias over 6 weeks. Apply your technique to real repertoire.', level: 'intermediate', duration_weeks: 6, is_free: 0, sort_order: 4 },
-    { id: 'prog-6', title: 'Performance Confidence', description: '3 weeks on stage presence, nerves management, and mock-performance exercises. Step onto the stage with confidence.', level: 'beginner', duration_weeks: 3, is_free: 0, sort_order: 5 },
+    { id: 'prog-1', title: 'Your First Notes', description: 'A 4-week journey from posture to breathing, pitch, and simple phrases. Perfect for those taking their first steps into opera.', level: 'beginner', duration_weeks: 4, is_free: 1, sort_order: 0 },
   ];
 
   for (const p of programs) {
