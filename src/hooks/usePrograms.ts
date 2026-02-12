@@ -1,27 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getPrograms, getProgramWithModules, getLesson, seedDefaultPrograms, fetchAndCachePrograms } from '@/services/programService';
+import { getSupabasePrograms, getSupabaseProgramWithModules, getSupabaseLesson, saveProgram, deleteProgram, ProgramDraft } from '@/services/supabaseProgramService';
 import { enrollInProgram, getUserPrograms, updateProgramProgress, EnrollSchedule } from '@/services/profileService';
-import { useAuthStore } from '@/stores/authStore';
 
 export function usePrograms() {
-  const { state } = useAuthStore();
-
   return useQuery({
     queryKey: ['programs'],
-    queryFn: async () => {
-      await seedDefaultPrograms();
-      if (state === 'authenticated') {
-        await fetchAndCachePrograms();
-      }
-      return getPrograms();
-    },
+    queryFn: () => getSupabasePrograms(),
   });
 }
 
 export function useProgramDetail(programId: string) {
   return useQuery({
     queryKey: ['program', programId],
-    queryFn: () => getProgramWithModules(programId),
+    queryFn: () => getSupabaseProgramWithModules(programId),
     enabled: !!programId,
   });
 }
@@ -29,8 +20,30 @@ export function useProgramDetail(programId: string) {
 export function useLessonDetail(lessonId: string) {
   return useQuery({
     queryKey: ['lesson', lessonId],
-    queryFn: () => getLesson(lessonId),
+    queryFn: () => getSupabaseLesson(lessonId),
     enabled: !!lessonId,
+  });
+}
+
+export function useSaveProgram() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (draft: ProgramDraft) => saveProgram(draft),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+    },
+  });
+}
+
+export function useDeleteProgram() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (programId: string) => deleteProgram(programId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+    },
   });
 }
 

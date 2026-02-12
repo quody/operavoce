@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card } from '@/components/common/Card';
+import { Button } from '@/components/common/Button';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { usePrograms, useUserPrograms } from '@/hooks/usePrograms';
+import { useProgramBuilderStore } from '@/stores/programBuilderStore';
 import { Program } from '@/types/database';
 
 const LEVEL_COLORS: Record<string, string> = {
@@ -15,10 +17,16 @@ const LEVEL_COLORS: Record<string, string> = {
 
 export default function ProgramCatalogScreen() {
   const router = useRouter();
-  const { data: programs = [], isLoading } = usePrograms();
+  const { data: programs = [], isLoading, error } = usePrograms();
   const { data: userPrograms = [] } = useUserPrograms();
+  const resetDraft = useProgramBuilderStore((s) => s.resetDraft);
 
   const enrolledProgramIds = new Set(userPrograms.map((up: any) => up.program_id));
+
+  const handleCreateProgram = () => {
+    resetDraft();
+    router.push('/(tabs)/programs/create');
+  };
 
   const renderProgram = ({ item }: { item: Program }) => {
     const isEnrolled = enrolledProgramIds.has(item.id);
@@ -69,10 +77,26 @@ export default function ProgramCatalogScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-surface-50">
-      <View className="px-6 pt-6 pb-4">
-        <Text className="text-2xl font-bold text-stone-900">Programs</Text>
-        <Text className="text-sm text-stone-500 mt-1">Structured training to develop your voice</Text>
+      <View className="px-6 pt-6 pb-4 flex-row items-start justify-between">
+        <View className="flex-1">
+          <Text className="text-2xl font-bold text-stone-900">Programs</Text>
+          <Text className="text-sm text-stone-500 mt-1">Structured training to develop your voice</Text>
+        </View>
+        <Button
+          title="+ Create"
+          onPress={handleCreateProgram}
+          variant="primary"
+          size="sm"
+        />
       </View>
+
+      {error && (
+        <View className="px-6 pb-3">
+          <Text className="text-sm text-error-500">
+            Failed to load programs from Supabase. Check your connection.
+          </Text>
+        </View>
+      )}
 
       <FlatList
         data={programs}
@@ -80,6 +104,17 @@ export default function ProgramCatalogScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View className="items-center py-16">
+            <Text className="text-stone-400 text-base mb-4">No programs yet</Text>
+            <Button
+              title="Create Your First Program"
+              onPress={handleCreateProgram}
+              variant="outline"
+              size="md"
+            />
+          </View>
+        }
       />
     </SafeAreaView>
   );
